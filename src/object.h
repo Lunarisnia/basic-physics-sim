@@ -9,6 +9,8 @@
 class Object {
 public:
   glm::mat4 Position = glm::mat4(1.0f);
+  glm::vec2 Velocity = glm::vec2(0.0f);
+
   Object(std::vector<float> vertices, std::string fragmentShader,
          std::string vertexShader);
   void Render();

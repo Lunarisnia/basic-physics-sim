@@ -13,6 +13,8 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 float currentFrame = 0.0f;
 
+glm::vec2 gravity(0.0f, -10.0f);
+
 void processInput(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, true);
@@ -60,15 +62,37 @@ int main() {
   Object plane(vertices, "./shaders/diffuse.frag",
                "./shaders/vertex-shader.vert");
 
+  // f = m * a
+  glm::vec3 planePos = glm::vec3(0.0f, 0.0f, 0.0f);
+  float timeStep = 1.0f / 60.0f;
+
   while (!glfwWindowShouldClose(window)) {
     currentFrame = (float)glfwGetTime();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
     processInput(window);
-
-    glm::vec3 planePos = glm::vec3(glm::sin((float)glfwGetTime()), 0.0f, 0.0f);
+    plane.Velocity.x += gravity.x * timeStep;
+    plane.Velocity.y += gravity.y * timeStep;
+    planePos.x += plane.Velocity.x * timeStep;
+    planePos.y += plane.Velocity.y * timeStep;
     plane.SetPosition(planePos);
+    if (planePos.x > 0.5f) {
+      planePos.x = 0.5f;
+      plane.Velocity.x = -plane.Velocity.x;
+    }
+    if (planePos.x < -0.5f) {
+      planePos.x = -0.5f;
+      plane.Velocity.x = -plane.Velocity.x;
+    }
+    if (planePos.y < -0.5f) {
+      planePos.y = -0.5f;
+      plane.Velocity.y = 0.0;
+    }
+    if (planePos.y > 0.5f) {
+      planePos.y = 0.5f;
+      plane.Velocity.y = -plane.Velocity.y;
+    }
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
