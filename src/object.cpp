@@ -2,7 +2,8 @@
 #include "glm/ext/matrix_transform.hpp"
 Object::Object(std::vector<float> vertices, std::string fragmentShader,
                std::string vertexShader)
-    : ShaderProgram(Shader(vertexShader.c_str(), fragmentShader.c_str())) {
+    : ShaderProgram(Shader(vertexShader.c_str(), fragmentShader.c_str())),
+      Scale(1.0f) {
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
 
@@ -40,22 +41,31 @@ void Object::SimulatePhysics() {
   Velocity.y += GRAVITY.y * TIMESTEP;
   Position[3][0] += Velocity.x * TIMESTEP;
   Position[3][1] += Velocity.y * TIMESTEP;
-  if (Position[3][0] > 0.5f) {
-    Position[3][0] = 0.5f;
-    Velocity.x = -Velocity.x;
+
+  float yOffset = 1.0f * Scale.y * 0.5f + 0.5f - Scale.y;
+  float xOffset = 1.0f * Scale.x * 0.5f + 0.5f - Scale.x;
+
+  if (Position[3][0] > 0.5f + xOffset) {
+    Position[3][0] = 0.5f + xOffset;
+    Velocity.x = -Velocity.x * 0.9f;
   }
-  if (Position[3][0] < -0.5f) {
-    Position[3][0] = -0.5f;
-    Velocity.x = -Velocity.x;
+  if (Position[3][0] < -0.5f - xOffset) {
+    Position[3][0] = -0.5f - xOffset;
+    Velocity.x = -Velocity.x * 0.9f;
   }
-  if (Position[3][1] < -0.5f) {
-    Position[3][1] = -0.5f;
+  if (Position[3][1] < -0.5f - yOffset) {
+    Position[3][1] = -0.5f - yOffset;
     Velocity.y = -Velocity.y * 0.9f;
   }
-  if (Position[3][1] > 0.5f) {
-    Position[3][1] = 0.5f;
-    Velocity.y = -Velocity.y * 0.5f;
+  if (Position[3][1] > 0.5f + yOffset) {
+    Position[3][1] = 0.5f + yOffset;
+    Velocity.y = -Velocity.y * 0.9f;
   }
+}
+
+void Object::Resize(glm::vec3 scale) {
+  Scale = scale;
+  Position = glm::scale(Position, Scale);
 }
 
 Object::~Object() {

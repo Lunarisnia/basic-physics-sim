@@ -64,6 +64,9 @@ int main() {
   glm::vec3 planePos = glm::vec3(0.0f, 0.0f, 0.0f);
   Object plane(vertices, "./shaders/diffuse.frag",
                "./shaders/vertex-shader.vert");
+  plane.Resize(glm::vec3(0.6f, 0.25f, 1.0f));
+  plane.Velocity.x = 0.6f;
+  plane.Velocity.y = 0.6f;
 
   while (!glfwWindowShouldClose(window)) {
     currentFrame = (float)glfwGetTime();

@@ -13,6 +13,7 @@ public:
   glm::mat4 Position = glm::mat4(1.0f);
   glm::vec2 Velocity = glm::vec2(0.0f);
   Shader ShaderProgram;
+  glm::vec3 Scale;
 
   Object(std::vector<float> vertices, std::string fragmentShader,
          std::string vertexShader);
@@ -21,6 +22,7 @@ public:
   ~Object();
   void Translate(glm::vec3 position);
   void SetPosition(glm::vec3 position);
+  void Resize(glm::vec3 scale);
 
 private:
   unsigned int VAO, VBO;
