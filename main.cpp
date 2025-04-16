@@ -9,6 +9,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+float currentFrame = 0.0f;
+
 void processInput(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, true);
@@ -57,7 +61,14 @@ int main() {
                "./shaders/vertex-shader.vert");
 
   while (!glfwWindowShouldClose(window)) {
+    currentFrame = (float)glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+
     processInput(window);
+
+    glm::vec3 planePos = glm::vec3(glm::sin((float)glfwGetTime()), 0.0f, 0.0f);
+    plane.SetPosition(planePos);
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

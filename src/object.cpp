@@ -1,4 +1,5 @@
 #include "object.h"
+#include "glm/ext/matrix_transform.hpp"
 Object::Object(std::vector<float> vertices, std::string fragmentShader,
                std::string vertexShader)
     : shaderProgram(Shader(vertexShader.c_str(), fragmentShader.c_str())) {
@@ -19,8 +20,19 @@ Object::Object(std::vector<float> vertices, std::string fragmentShader,
 
 void Object::Render() {
   shaderProgram.use();
+  shaderProgram.setMat4("model", Position);
   glBindVertexArray(VAO);
   glDrawArrays(GL_TRIANGLES, 0, verticeCount / 3);
+}
+
+void Object::Translate(glm::vec3 position) {
+  Position = glm::translate(Position, position);
+}
+
+void Object::SetPosition(glm::vec3 position) {
+  glm::mat4 newPosition = glm::mat4(1.0f);
+  newPosition = glm::translate(newPosition, position);
+  Position = newPosition;
 }
 
 Object::~Object() {
