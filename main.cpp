@@ -1,3 +1,4 @@
+#include "src/object.h"
 #include "src/stb_image.h"
 #include <glad/glad.h>
 // FORCE
@@ -8,11 +9,18 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+void processInput(GLFWwindow *window) {
+  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, true);
+  }
+}
+
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
 int main() {
+
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -36,5 +44,30 @@ int main() {
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-  // TODO: Setup vertices stuff
+  std::vector<float> vertices = {
+      0.5f, 0.5f, 0.0f,   //
+      -0.5f, 0.5f, 0.0f,  //
+      0.5f, -0.5f, 0.0f,  //
+                          //
+      -0.5f, -0.5f, 0.0f, //
+      -0.5f, 0.5f, 0.0f,  //
+      0.5f, -0.5f, 0.0f   //
+  };
+  Object plane(vertices, "./shaders/diffuse.frag",
+               "./shaders/vertex-shader.vert");
+
+  while (!glfwWindowShouldClose(window)) {
+    processInput(window);
+
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    plane.Render();
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
+  glfwTerminate();
+
+  return 0;
 }
