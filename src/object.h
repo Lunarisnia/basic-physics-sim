@@ -6,6 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <string>
 #include <vector>
+const float TIMESTEP = 1.0f / 60.0f;
+const glm::vec2 GRAVITY = glm::vec2(0.0f, -10.0f);
 class Object {
 public:
   glm::mat4 Position = glm::mat4(1.0f);
@@ -15,6 +17,7 @@ public:
   Object(std::vector<float> vertices, std::string fragmentShader,
          std::string vertexShader);
   void Render();
+  void SimulatePhysics();
   ~Object();
   void Translate(glm::vec3 position);
   void SetPosition(glm::vec3 position);

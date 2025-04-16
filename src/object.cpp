@@ -35,6 +35,29 @@ void Object::SetPosition(glm::vec3 position) {
   Position = newPosition;
 }
 
+void Object::SimulatePhysics() {
+  Velocity.x += GRAVITY.x * TIMESTEP;
+  Velocity.y += GRAVITY.y * TIMESTEP;
+  Position[3][0] += Velocity.x * TIMESTEP;
+  Position[3][1] += Velocity.y * TIMESTEP;
+  if (Position[3][0] > 0.5f) {
+    Position[3][0] = 0.5f;
+    Velocity.x = -Velocity.x;
+  }
+  if (Position[3][0] < -0.5f) {
+    Position[3][0] = -0.5f;
+    Velocity.x = -Velocity.x;
+  }
+  if (Position[3][1] < -0.5f) {
+    Position[3][1] = -0.5f;
+    Velocity.y = -Velocity.y * 0.9f;
+  }
+  if (Position[3][1] > 0.5f) {
+    Position[3][1] = 0.5f;
+    Velocity.y = -Velocity.y * 0.5f;
+  }
+}
+
 Object::~Object() {
   glDeleteVertexArrays(1, &VAO);
   glDeleteBuffers(1, &VBO);

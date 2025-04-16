@@ -60,40 +60,19 @@ int main() {
       -0.5f, 0.5f, 0.0f,  //
       0.5f, -0.5f, 0.0f   //
   };
-  Object plane(vertices, "./shaders/diffuse.frag",
-               "./shaders/vertex-shader.vert");
-
   // f = m * a
   glm::vec3 planePos = glm::vec3(0.0f, 0.0f, 0.0f);
-  float timeStep = 1.0f / 60.0f;
+  Object plane(vertices, "./shaders/diffuse.frag",
+               "./shaders/vertex-shader.vert");
 
   while (!glfwWindowShouldClose(window)) {
     currentFrame = (float)glfwGetTime();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
+    plane.SimulatePhysics();
+
     processInput(window);
-    plane.Velocity.x += gravity.x * timeStep;
-    plane.Velocity.y += gravity.y * timeStep;
-    planePos.x += plane.Velocity.x * timeStep;
-    planePos.y += plane.Velocity.y * timeStep;
-    plane.SetPosition(planePos);
-    if (planePos.x > 0.5f) {
-      planePos.x = 0.5f;
-      plane.Velocity.x = -plane.Velocity.x;
-    }
-    if (planePos.x < -0.5f) {
-      planePos.x = -0.5f;
-      plane.Velocity.x = -plane.Velocity.x;
-    }
-    if (planePos.y < -0.5f) {
-      planePos.y = -0.5f;
-      plane.Velocity.y = -plane.Velocity.y * 0.9f;
-    }
-    if (planePos.y > 0.5f) {
-      planePos.y = 0.5f;
-      plane.Velocity.y = -plane.Velocity.y;
-    }
 
     glm::mat4 view = glm::mat4(1.0f);
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.5f));
