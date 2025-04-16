@@ -2,7 +2,7 @@
 #include "glm/ext/matrix_transform.hpp"
 Object::Object(std::vector<float> vertices, std::string fragmentShader,
                std::string vertexShader)
-    : shaderProgram(Shader(vertexShader.c_str(), fragmentShader.c_str())) {
+    : ShaderProgram(Shader(vertexShader.c_str(), fragmentShader.c_str())) {
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
 
@@ -19,8 +19,8 @@ Object::Object(std::vector<float> vertices, std::string fragmentShader,
 }
 
 void Object::Render() {
-  shaderProgram.use();
-  shaderProgram.setMat4("model", Position);
+  ShaderProgram.use();
+  ShaderProgram.setMat4("model", Position);
   glBindVertexArray(VAO);
   glDrawArrays(GL_TRIANGLES, 0, verticeCount / 3);
 }

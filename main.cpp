@@ -1,3 +1,4 @@
+#include "glm/ext/matrix_clip_space.hpp"
 #include "src/object.h"
 #include "src/stb_image.h"
 #include <glad/glad.h>
@@ -87,12 +88,20 @@ int main() {
     }
     if (planePos.y < -0.5f) {
       planePos.y = -0.5f;
-      plane.Velocity.y = 0.0;
+      plane.Velocity.y = -plane.Velocity.y * 0.9f;
     }
     if (planePos.y > 0.5f) {
       planePos.y = 0.5f;
       plane.Velocity.y = -plane.Velocity.y;
     }
+
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.5f));
+
+    glm::mat4 projection = glm::mat4(1.0f);
+    projection = glm::ortho(0.0f, 0.0f, 800.0f, 600.0f, 1.0f, -2.0f);
+    plane.ShaderProgram.use();
+    plane.ShaderProgram.setMat4("projection", projection);
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

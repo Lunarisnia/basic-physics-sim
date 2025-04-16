@@ -10,6 +10,7 @@ class Object {
 public:
   glm::mat4 Position = glm::mat4(1.0f);
   glm::vec2 Velocity = glm::vec2(0.0f);
+  Shader ShaderProgram;
 
   Object(std::vector<float> vertices, std::string fragmentShader,
          std::string vertexShader);
@@ -21,7 +22,6 @@ public:
 private:
   unsigned int VAO, VBO;
   int verticeCount;
-  Shader shaderProgram;
 };
 
 #endif
