@@ -51,29 +51,65 @@ int main() {
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+  float w1 = 0.25f;
+  float h1 = 0.25f;
   std::vector<float> vertices = {
-      0.5f, 0.5f, 0.0f,   //
-      -0.5f, 0.5f, 0.0f,  //
-      0.5f, -0.5f, 0.0f,  //
-                          //
-      -0.5f, -0.5f, 0.0f, //
-      -0.5f, 0.5f, 0.0f,  //
-      0.5f, -0.5f, 0.0f   //
+      w1, h1, 0.0f,   //
+      -w1, h1, 0.0f,  //
+      w1, -h1, 0.0f,  //
+                      //
+      -w1, -h1, 0.0f, //
+      -w1, h1, 0.0f,  //
+      w1, -h1, 0.0f   //
   };
-  // f = m * a
-  glm::vec3 planePos = glm::vec3(0.0f, 0.0f, 0.0f);
+  glm::vec3 planePos = glm::vec3(1.0f, 0.0f, 0.0f);
   Object plane(vertices, "./shaders/diffuse.frag",
                "./shaders/vertex-shader.vert");
-  plane.Resize(glm::vec3(0.6f, 0.25f, 1.0f));
-  plane.Velocity.x = 0.6f;
+  plane.SetPosition(planePos);
+  /*plane.Resize(glm::vec3(0.6f, 0.25f, 1.0f));*/
+  plane.Velocity.x = -0.4f;
   plane.Velocity.y = 0.6f;
+
+  float w2 = 0.25f;
+  float h2 = 0.25f;
+  std::vector<float> vertices2 = {
+      w2, h2, 0.0f,   //
+      -w2, h2, 0.0f,  //
+      w2, -h2, 0.0f,  //
+                      //
+      -w2, -h2, 0.0f, //
+      -w2, h2, 0.0f,  //
+      w2, -h2, 0.0f   //
+  };
+  glm::vec3 planePos2 = glm::vec3(-1.0f, 0.0f, 0.0f);
+  Object plane2(vertices2, "./shaders/diffuse.frag",
+                "./shaders/vertex-shader.vert");
+  plane2.SetPosition(planePos2);
+  /*plane.Resize(glm::vec3(0.6f, 0.25f, 1.0f));*/
+  plane2.Velocity.x = 0.4f;
+  plane2.Velocity.y = 0.6f;
+
+  // TODO: Collision detection / trigger
 
   while (!glfwWindowShouldClose(window)) {
     currentFrame = (float)glfwGetTime();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
+    glm::vec3 p1 = glm::vec3(plane.Position[3][0], plane.Position[3][1],
+                             plane.Position[3][2]);
+    glm::vec3 p2 = glm::vec3(plane2.Position[3][0], plane2.Position[3][1],
+                             plane2.Position[3][2]);
+
+    if (p1.x < p2.x + w2 && p1.x + w1 > p2.x && p1.y < p2.y + h2 &&
+        p1.y + h1 > p2.y) {
+      /*std::cout << "Collided!" << std::endl;*/
+      plane.Velocity.x = -plane.Velocity.x * 0.5f;
+      plane2.Velocity.x = -plane2.Velocity.x * 0.5f;
+    }
+
     plane.SimulatePhysics();
+    plane2.SimulatePhysics();
 
     processInput(window);
 
@@ -89,6 +125,7 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     plane.Render();
+    plane2.Render();
 
     glfwSwapBuffers(window);
     glfwPollEvents();

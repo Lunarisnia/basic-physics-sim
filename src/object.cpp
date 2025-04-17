@@ -17,6 +17,8 @@ Object::Object(std::vector<float> vertices, std::string fragmentShader,
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
   glEnableVertexAttribArray(0);
   verticeCount = vertices.size();
+  w = vertices[0];
+  h = vertices[1];
 }
 
 void Object::Render() {
@@ -42,23 +44,22 @@ void Object::SimulatePhysics() {
   Position[3][0] += Velocity.x * TIMESTEP;
   Position[3][1] += Velocity.y * TIMESTEP;
 
-  float yOffset = 1.0f * Scale.y * 0.5f + 0.5f - Scale.y;
-  float xOffset = 1.0f * Scale.x * 0.5f + 0.5f - Scale.x;
-
-  if (Position[3][0] > 0.5f + xOffset) {
-    Position[3][0] = 0.5f + xOffset;
+  if (Position[3][0] > 1.0f - w) {
+    Position[3][0] = 1.0f - w;
     Velocity.x = -Velocity.x * 0.9f;
+    /*Velocity.x = 0.0f;*/
   }
-  if (Position[3][0] < -0.5f - xOffset) {
-    Position[3][0] = -0.5f - xOffset;
+  if (Position[3][0] < -1.0f + w) {
+    Position[3][0] = -1.0f + w;
     Velocity.x = -Velocity.x * 0.9f;
+    /*Velocity.x = 0.0f;*/
   }
-  if (Position[3][1] < -0.5f - yOffset) {
-    Position[3][1] = -0.5f - yOffset;
+  if (Position[3][1] < -1.0f + h) {
+    Position[3][1] = -1.0f + h;
     Velocity.y = -Velocity.y * 0.9f;
   }
-  if (Position[3][1] > 0.5f + yOffset) {
-    Position[3][1] = 0.5f + yOffset;
+  if (Position[3][1] > 1.0f - h) {
+    Position[3][1] = 1.0f - h;
     Velocity.y = -Velocity.y * 0.9f;
   }
 }

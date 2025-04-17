@@ -15,6 +15,10 @@ public:
   Shader ShaderProgram;
   glm::vec3 Scale;
 
+  // TEMPORARY
+  float w;
+  float h;
+
   Object(std::vector<float> vertices, std::string fragmentShader,
          std::string vertexShader);
   void Render();
